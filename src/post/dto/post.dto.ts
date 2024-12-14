@@ -1,5 +1,5 @@
 import { Post } from '@prisma/client';
-import { IsNotEmpty } from 'class-validator';
+import { IsInt, IsNotEmpty } from 'class-validator';
 
 export class CreatePostDto {
   @IsNotEmpty()
@@ -15,7 +15,7 @@ export class CreatePostDto {
   @IsNotEmpty()
   ownerId: number;
 
-  @IsNotEmpty()
+  @IsInt()
   categoryId: number;
 }
 

@@ -11,6 +11,14 @@ export class CreateImageDto {
   status: number;
 }
 
+export class CreateCommentDto {
+  @IsNotEmpty()
+  content: string;
+
+  @IsNotEmpty()
+  imageId: number; // Reference to the image
+}
+
 export interface ImageFilterType {
   items_per_page?: number;
   page?: number;

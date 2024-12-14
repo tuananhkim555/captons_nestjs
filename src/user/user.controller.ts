@@ -7,6 +7,7 @@ import {
   Param,
   ParseIntPipe,
   Put,
+  Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from '@prisma/client';
@@ -33,9 +34,24 @@ export class UserController {
     return this.userService.getAll(params);
   }
   @Get(':id')
-  getDetail(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    console.log('get detail user ap=>', id);
-    return this.userService.getDetail(id);
+  async getUser(@Param('id') id: string): Promise<User | null> {
+    const userId = parseInt(id, 10);
+    return this.userService.getUserById(userId);
+  }
+  @Get(':id/saved-images')
+  async getSavedImages(@Param('id') id: string) {
+    const userId = parseInt(id, 10);
+    return this.userService.getSavedImagesByUserId(userId);
+  }
+  @Get(':id/created-images')
+  async getCreatedImages(@Param('id') id: string) {
+    const userId = parseInt(id, 10);
+    return this.userService.getCreatedImagesByUserId(userId);
+  }
+  @Delete(':id/images/:imageId')
+  async deleteImage(@Param('imageId') imageId: string) {
+    const imgId = parseInt(imageId, 10);
+    return this.userService.deleteImageById(imgId);
   }
   @Put(':id')
   update(

@@ -115,4 +115,29 @@ export class UserService {
       data,
     });
   }
+
+  async getUserById(id: number): Promise<User | null> {
+    return this.prismaService.user.findUnique({
+      where: { id },
+    });
+  }
+
+  async getSavedImagesByUserId(userId: number) {
+    return this.prismaService.savedImage.findMany({
+      where: { userId },
+      include: { image: true }, // Include image details
+    });
+  }
+
+  async getCreatedImagesByUserId(userId: number) {
+    return this.prismaService.image.findMany({
+      where: { ownerId: userId },
+    });
+  }
+
+  async deleteImageById(imageId: number) {
+    return this.prismaService.image.delete({
+      where: { id: imageId },
+    });
+  }
 }

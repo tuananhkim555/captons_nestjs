@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int          @id @default(autoincrement())
+  email      String       @unique
+  password   String
+  phone      String
+  name       String
+  status     Int          @default(1)
+  post       Post[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @default(now()) @updatedAt
+  Image      Image[]
+  SavedImage SavedImage[]
+}
+
+model Post {
+  id         Int      @id @default(autoincrement())
+  title      String
+  summary    String
+  content    String   @db.LongText
+  status     Int      @default(1)
+  owner      User     @relation(fields: [ownerId], references: [id])
+  ownerId    Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  post        Post[]
+}
+
+model Comment {
+  id      Int    @id @default(autoincrement())
+  message String
+}
+
+model Image {
+  id         Int            @id @default(autoincrement())
+  title      String
+  url        String
+  status     Int
+  owner      User           @relation(fields: [ownerId], references: [id])
+  ownerId    Int
+  comments   CommentImage[]
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @default(now()) @updatedAt
+  SavedImage SavedImage[]
+}
+
+model CommentImage {
+  id        Int      @id @default(autoincrement())
+  content   String
+  imageId   Int
+  image     Image    @relation(fields: [imageId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model SavedImage {
+  id      Int   @id @default(autoincrement())
+  imageId Int
+  userId  Int
+  image   Image @relation(fields: [imageId], references: [id])
+  user    User  @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
